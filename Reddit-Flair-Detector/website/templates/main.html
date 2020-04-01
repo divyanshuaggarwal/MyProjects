@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Reddit Flair Detector</title>
+    <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+   <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">-->
+   <link href="{{ url_for('static',filename = 'style.css') }}" rel="stylesheet" type="text/css">
+</head>
+<div class="formbox">
+<form action="{{ url_for('main') }}" method="POST">
+    <fieldset>
+        <legend>Reddit Flair Detector:</legend>
+        Enter a Reddit Post URL from <a href="https://reddit.com/r/india" style="color: white">here</a>:
+        <input name="url" type="text" required>
+        <br>
+        <br>
+        <input type="submit" class="btn btn-primary btn-block btn-large">
+        
+    
+    
+</fieldset>
+
+</form>
+
+<div style="padding-top:10px">
+        <form method = "GET" action="/stats">
+            <div class="form-actions">
+              <button class="btn btn-primary btn-block btn-large" type="submit">Statistics</button>
+            </div>
+        </form>
+        </div>
+
+   <!--<div> 
+       <form method = "GET" action="/stats">
+        <div class="form-actions">
+          <button class="btn btn-primary btn-block btn-large" type="submit">Statistics</button>
+        </div>-->
+</div>
+
+<!-- <div class="imagebox">
+    <h1>Statistics</h1>
+    <img src="{{url_for('static', filename='image.jpg')}}" alt="" srcset="" class="img">
+</div> -->
+<br>
+<div class="result" align="center">
+    {% if result %}
+    	{% for variable, value in original_input.items() %}
+    		<b>{{ variable }}</b> : {{ value }}
+    	{% endfor %}
+		<br>
+    	<br> Predicted flair:
+   		<p style="font-size:50px">{{ result }}</p>
+    {% endif %}
+</div>
+<div style="position:absolute;left:50%;transform:translate(-50%);bottom:0;width:100%;background-color: rgba(0,0,0,0.5);padding: 2px;font-size: 13px;">&#169 COPYRIGHT CREATED BY DIVYANSHU AGARWAL</div>
+</html>

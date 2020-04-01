@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Reddit Flair Detector</title>
+	<link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+   <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">-->
+   <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" type="text/css">
+
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+	<!-- D3.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <!-- Plotly.js -->
+    <script src="https://d14fo0winaifog.cloudfront.net/plotly-basic.js"></script>
+</head>
+<body>
+	<div class="container">
+	<div class="jumbotron">
+  			<h1 style="text-align: center;">Reddit Flair Detector</h1>
+  			<p style="text-align: center;">Statistical analysis on which flaired posts gather more upvotes versus which ones gather more comments on the subreddit <a href="https://www.reddit.com/r/india/" style="color: #FFFFFF">india</a></p> 
+	  	{% block ans %}{% endblock %}
+  	</div>
+  	</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/app.js"></script>
+</body>
+</html>

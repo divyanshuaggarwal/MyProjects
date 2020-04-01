@@ -1,0 +1,32 @@
+{% extends "index.html" %}
+{% block ans %}
+<!-- <img src="{{ url_for('static', filename='image.jpg') }}" width="80%" height="80%"> -->
+<div class="container" style="align-self: center">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="chart" id="bargraph">
+				<script type="text/javascript">
+					var graphs = {{plot | safe}};
+					Plotly.plot('bargraph',graphs,{});
+				</script>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <div style="padding-top:10px">
+	<form method = "GET" action="/">
+		<div class="form-actions">
+		  <button class="btn btn-primary btn-block btn-large" type="submit">Go Back</button>
+		</div>
+	</form>
+	</div> -->
+		<div style="padding-top:50px" class="formbox">
+			<form method = "GET" action="/">
+				<div class="form-actions">
+				  <button class="btn btn-primary btn-block btn-large" type="submit">Go back</button>
+				</div>
+			</form>
+			</div>
+
+{% endblock %}
+
