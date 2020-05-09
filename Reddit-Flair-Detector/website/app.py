@@ -1,23 +1,45 @@
-import scripts.textcleaning as tc
-from scripts.plot import create_plot
 import pickle
 import logging
 import gensim
 import praw
 from praw.models import MoreComments
-from zipfile import ZipFile 
+import os
+import flask
+from flask import Flask, flash, request,jsonify, json
+import json
+import joblib
+from gensim import utils
+import gensim.parsing.preprocessing as gsp
 
-# file_name = "model/random_forest_model.bin.zip"
+filters = [
+		   gsp.strip_tags,
+		   gsp.strip_punctuation,
+		   gsp.strip_multiple_whitespaces,
+		   gsp.strip_numeric,
+		   gsp.remove_stopwords,
+		   gsp.strip_short,
+		   gsp.stem_text
+		  ]
 
-# Use pickle to load in the pre-trained model
-model = pickle.load(open('model/LR.pkl','rb'))
+def clean(s):
+	s = s.lower()
+	s = utils.to_unicode(s)
+	for f in filters:
+		s = f(s)
+	return s
+
+app = Flask(__name__,template_folder='templates')
 
 
-reddit = praw.Reddit(client_id = "JTqwrVU0MISDWg",
-					client_secret = "xe06s55FgF5JDSHABI2AsnrX1Q0",
-					user_agent = "reddit_scraper",
-					username = "divyanshuggrwl",
-					password = "wateringplants")
+# Use joblib to load in the pre-trained model
+model = joblib.load(open('model/xgb.bin', 'rb'))
+
+reddit = praw.Reddit(client_id = "######",
+					client_secret = "#######",
+					user_agent = "#######",
+					username = "########",
+					password = "########")
+
 
 def prediction(url):
 	submission = reddit.submission(url = url)
@@ -33,49 +55,53 @@ def prediction(url):
 		comment = comment + ' ' + top_level_comment.body
 		count+=1
 		if(count > 10):
-		 	break
-		
+			 break
+
 	data["comment"] = str(comment)
 
-	data['title'] = tc.clean_text(str(data['title']))
-	data['body'] = tc.clean_text(str(data['body']))
-	data['comment'] = tc.clean_text(str(data['comment']))
-    
+	data['title'] = clean(str(data['title']))
+	data['body'] = clean(str(data['body']))
+	data['comment'] = clean(str(data['comment']))
+
 	combined_features = data["title"] + data["comment"] + data["body"] + data["url"]
 
 	return model.predict([combined_features])
 
-
-import flask
-import pickle
-import pandas as pd
-
-
 # Initialise the Flask app
-app = flask.Flask(__name__, template_folder='templates')
 
 # Set up the main route
 @app.route('/', methods=['GET', 'POST'])
 def main():
-    if flask.request.method == 'GET':
-        # Just render the initial form, to get input
-        return(flask.render_template('main.html'))
-    
-    if flask.request.method == 'POST':
-        # Extract the input
-        text = flask.request.form['url']
-        
-        # Get the model's prediction
-        flair = prediction(str(text))
-    
-        # Render the form again, but add in the prediction and remind user
-        # of the values they input before
-        return flask.render_template('main.html', original_input={'url':str(text)}, result=flair,)
-@app.route("/stats")
-def stats():
-	bar = create_plot()
-	return flask.render_template('graph.html',plot=bar)
+	if flask.request.method == 'GET':
+		# Just render the initial form, to get input
+		return(flask.render_template('main.html'))
 
+	if flask.request.method == 'POST':
+		# Extract the input
+		text = flask.request.form['url']
+
+		# Get the model's prediction
+		flair = str(prediction(str(text)))
+
+		# Render the form again, but add in the prediction and remind user
+		# of the values they input before
+		return flask.render_template('main.html', original_input={'url':str(text)}, result=flair[2:-2])
+
+
+
+@app.route("/automated_testing",methods=['POST'])
+def test():
+	if request.files:
+			file = request.files["upload_file"]
+			texts = file.read()
+			texts = str(texts.decode('utf-8'))
+			links = texts.split('\n')
+			pred = {}
+			for link in links:
+				pred[link] =  str(prediction(str(link)))[2:-2]
+			return jsonify(pred)
+	else:
+			return 400
 
 if __name__ == '__main__':
-    app.run()
+	app.run()

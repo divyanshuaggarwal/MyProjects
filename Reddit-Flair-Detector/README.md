@@ -6,11 +6,13 @@ A Reddit Flair Detector web application to detect flairs of India subreddit post
 
 The directory largely contains 2 ipython notebooks and 1 web directory:
 
-1. [Data-Acquisition Notebook](https://github.com/divyanshuaggarwal/Reddit-Flair-Detector/blob/master/Data_Acquisition.ipynb) contains all the code that was used to fetch data using PRAW API from reddit and adding it to the mongodb database using pymongo. It was the fetched back from the data base and pre-processed to add it into a CSV file to do the data analysis and build the machine learning model.
+1. [Data-Acquisition Notebook](https://github.com/divyanshuaggarwal/Reddit-Flair-Detector/blob/master/Reddit_Data_Collector.ipynb) contains all the code that was used to fetch data using PRAW API from reddit and adding it to the mongodb database using pymongo. It was the fetched back from the data base and pre-processed to add it into a CSV file to do the data analysis and build the machine learning model.
+   
+2. [Exploratory Data Analysis Notebook](https://github.com/divyanshuaggarwal/Reddit-Flair-Detector/blob/master/Exploratory_Data_Analysis.ipynb) contains all the code that was used to analyse and visualize the data.
+    
+3. [Flair-Detector Notebook](https://github.com/divyanshuaggarwal/Reddit-Flair-Detector/blob/master/Flair_Detection.ipynb) contains the code used to train various machine learning models and check the accuracy on different features.
  
- 2. [Flair-Detector Notebook](https://github.com/divyanshuaggarwal/Reddit-Flair-Detector/blob/master/Flair_Detection.ipynb) contains the code used to do the data analysis and train various machine learning models and check the accuracy on different features.
- 
- 3. [Website Directory](https://github.com/divyanshuaggarwal/Reddit-Flair-Detector/tree/master/website) the directory contains the flask implementation of the app and the requirements and procfile for heroku deployment. The detail of each file in the directory can be found in the readme.md file of the directory.
+4. [Website Directory](https://github.com/divyanshuaggarwal/Reddit-Flair-Detector/tree/master/website) the directory contains the flask implementation of the app,the requirements and procfile for heroku deployment. The detail of each file in the directory can be found in the readme.md file of the directory.
   
 ### Codebase
 
@@ -20,13 +22,12 @@ The entire code has been developed using Python programming language, utilizing 
 
   1. Open the `Terminal`.
   2. Clone the repository by entering `git clone https://github.com/divyanshuaggarwal/Reddit-Flair-Detector.git` and navigate into `website` directory by entering `cd website` in the terminal.
-  3. Ensure that `Python3` and `pip` is installed on the system.
-  4. Create a `virtualenv` by executing the following command: `virtualenv -p python3 env`.
-  5. Activate the `env` virtual environment by executing the follwing command: `source env/bin/activate`.
+  3. Ensure that `Python3` and `pip` are installed on the system.
+  4. Create a `virtualenv` by executing the following command: `virtualenv venv`.
+  5. Activate the `venv` virtual environment by executing the follwing command: `source venv/bin/activate`.
   6. Enter the cloned repository directory and execute `pip install -r requirements.txt`.
-  7. Enter `python` shell and `import nltk`. Execute `nltk.download('stopwords')` and exit the shell.
-  8. Now, execute the following command: `flask run` and it will point to the `localhost` with the port '5000'.
-  9. Enter the `IP Address: http://localhost:5000` on a web browser and use the application.
+  7. Now, execute the following command: `flask run` and it will point to the `localhost` server with the port `5000`.
+  8. Enter the `IP Address: http://localhost:5000` on a web browser and use the application.
   
 ### Dependencies
 
@@ -36,12 +37,12 @@ The following dependencies can be found in [requirements.txt](https://github.com
   2. [scikit-learn](https://scikit-learn.org/)
   3. [nltk](https://www.nltk.org/)
   4. [Flask](https://palletsprojects.com/p/flask/)
-  5. [bs4](https://pypi.org/project/bs4/)
+  5. [Gensim](https://radimrehurek.com/gensim/)
   6. [pandas](https://pandas.pydata.org/)
   7. [numpy](http://www.numpy.org/)
   8. [scikit-learn](https://scikit-learn.org/stable/index.html)
   9. [gunicorn](https://gunicorn.org/)
-  10. [plotly](https://plot.ly/)
+  10. [XGBoost](https://xgboost.readthedocs.io/en/latest/)
   
 ### Approach
 
@@ -53,8 +54,7 @@ The approach taken for the task is as follows:
   2. The data includes *title, comments, body, url, author, score, id, time-created* and *number of comments*.
   3. For **comments**, only top level comments (top 10) are considered in dataset and no sub-comments are present.
   4. The ***title, comments*** and ***body*** are cleaned by removing bad symbols and stopwords using `nltk`.
-  5. Five types of features are considered for the the given task:
-    
+  5. Five types of features are considered for the the given task: 
     a) Title
     b) Comments
     c) Urls
@@ -69,9 +69,9 @@ The approach taken for the task is as follows:
     c) Logistic Regression
     d) Random Forest
     e) MLP
-   9. Training and Testing on the dataset showed the **Random Forest** showed the best testing accuracy of **94.1%** when trained on the combination of **Title + Comments + URL** feature.
-   10. The best model is random forest but due to its large size I had to go for logistic regression which was deployable on heroku and git and is used for prediction of the flair from the URL of the post.
-    
+    f) XGBoost
+   9. Training and Testing on the dataset showed the **XGBoost** showed the best testing accuracy of **94.4%** when trained on the combination of **Title + Comments + URL** feature.
+  
 ### Results
 
 #### Title as Feature
@@ -83,6 +83,7 @@ The approach taken for the task is as follows:
 | Logistic Regression        | 0.8973214285      |
 | Random Forest              | **0.904017**      |
 | MLP                        | 0.8772321428      |
+| XGBoost                    | 0.8080357142      |
 
 #### Body as Feature
 
@@ -91,8 +92,9 @@ The approach taken for the task is as follows:
 | Naive Bayes                | 0.2678571428      |
 | Linear SVM                 | 0.3906250000      |
 | Logistic Regression        | **0.415178**      |
-| Random Forest              | 0.40848214280000  |
+| Random Forest              | 0.4084821428      |
 | MLP                        | 0.4107142857      |
+|XGBoost                     | 0.4218750000      |
 
 #### URL as Feature
 
@@ -103,6 +105,7 @@ The approach taken for the task is as follows:
 | Logistic Regression        | 0.82142857142     |
 | Random Forest              | 0.8191964285      |
 | MLP                        | **0.8281250000**  |
+| XGBoost                    | 0.4799107142      |
 
 #### Comments as Feature
 
@@ -113,6 +116,7 @@ The approach taken for the task is as follows:
 | Logistic Regression        | 0.8683035714      |
 | Random Forest              | **0.8928571428**  |
 | MLP                        | 0.8459821428      |
+| XGBoost                    | 0.8147321428      |
 
 #### Title + Comments + URL as Feature
 
@@ -121,12 +125,13 @@ The approach taken for the task is as follows:
 | Naive Bayes                | 0.8125000000      |
 | Linear SVM                 | 0.9285714285      |
 | Logistic Regression        | 0.933035714285714 |
-| Random Forest              | **0.941964**      |
+| Random Forest              | 0.94196428571     |
 | MLP                        | 0.8660714285      |
-
+| XGBoost                    | **0.944196**      |
 
 ### Inferences 
- the tests shows that combined features i.e. Title + comments + URL shows the best accuracy while body shows the worst accuracy. Title as feature and comments as features are close runner ups, followed by URL. As machine learning models tries to detect specific words to identify the sentiment it makes sense because more the content means more information. Title as feature performing so well can be due to the fact the title consists of all the keywords to expect in the body, and comments can show a pattern on what topic the discussion is going on. 
+ the tests shows that combined features i.e. Title + comments + URL shows the best accuracy while body shows the worst accuracy. Title as feature and comments as features are close runner ups, followed by URL. As machine learning models tries to detect specific words to identify the sentiment it makes sense because more the content means more information. Title as feature performing so well can be due to the fact the title consists of all the keywords to expect in the body, and comments can show a pattern on what topic the discussion is going on.
+
 
 ### References
 
@@ -142,7 +147,7 @@ The approach taken for the task is as follows:
 3. https://medium.com/@robert.salgado/multiclass-text-classification-from-start-to-finish-f616a8642538
 4. https://www.analyticsvidhya.com/blog/2018/04/a-comprehensive-guide-to-understand-and-implement-text-classification-in-python/
 
-#### 3.For Deploying the model:
+#### 3.For Building the Website and Deploying it:
 1. https://medium.com/techkylabs/getting-started-with-python-flask-framework-part-1-a4931ce0ea13 (entire series)
 2. https://towardsdatascience.com/designing-a-machine-learning-model-and-deploying-it-using-flask-on-heroku-9558ce6bde7b
 3. https://www.freecodecamp.org/news/how-to-build-a-web-application-using-flask-and-deploy-it-to-the-cloud-3551c985e492/
