@@ -1,0 +1,3 @@
+[submodule "NLP/NLP/covid19-rasa-chatbot"]
+	path = NLP/NLP/covid19-rasa-chatbot
+	url = https://github.com/tuhinssam/covid19-rasa-chatbot.git
