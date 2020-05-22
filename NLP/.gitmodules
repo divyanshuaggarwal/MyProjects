@@ -1,0 +1,3 @@
+[submodule "covid19-chatbot"]
+	path = covid19-chatbot
+	url = https://github.com/divyanshuaggarwal/covid-19-chatbot.git
