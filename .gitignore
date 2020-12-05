@@ -140,3 +140,9 @@ dmypy.json
 cython_debug/
 
 *.w
+
+*model.h5
+
+*model.png
+
+*.pkl
